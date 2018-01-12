@@ -130,13 +130,12 @@ let competition = {
   events: [] // push event
 }
 
-
 function _getCompetition (competitionCount, marketlineCount) {
   let _competitions = []
-  let _singleCompetition = extend(true, {}, competition)
 
   for (let i = 0; i < competitionCount; i++) {
-    _singleCompetition.isCollapse = false
+    let _singleCompetition = extend(true, {}, competition)
+    _singleCompetition.isCollapse = i === 0 ? false : true
     _singleCompetition.competitionName = ['COMPETITION NAME ', i].join('')
     _singleCompetition.events = _getEvents(marketlineCount)
 
@@ -152,7 +151,7 @@ function _getEvents (marketlineCount) {
   for (let i = 0; i < marketlineCount; i++) {
     let _singleEvent = extend(true, {}, event)
     _singleEvent.isFirst = i === 0 ? true : false
-    _singleEvent.marketlineDatas = _getmarketlineDatas()
+    _singleEvent.maketlineDatas = _getmarketlineDatas()
     _events.push(_singleEvent)
   }
 
@@ -168,12 +167,13 @@ function _getmarketlineDatas () {
   return _marketlines
 }
 
+let golbalTeamNameTimes = 0
 function _getTeamName (teamCount) {
   let _teamNameDatas = []
   for (let i = 0; i < teamCount; i++) {
     let _singleTeam = extend(true, {}, teamNames)
     _singleTeam.id = i + 1
-    _singleTeam.name = ['Hendra Setiawan', ' / ', 'Team Name Long Long name', i].join('')
+    _singleTeam.name = ['Hendra Setiawan', ' / ', 'Team Name Long Long name', golbalTeamNameTimes++].join('')
     _singleTeam.score = i
     _teamNameDatas.push(_singleTeam)
   }
@@ -249,7 +249,7 @@ function _getOddsData () {
 function _getOddsNumber (typeName) {
   switch (typeName) { // HK, decimal, indo, Malay
     default:
-      return Math.round((Math.random() * (5 - 0.2) + 0.2) * 100) / 100
+      return (Math.round((Math.random() * (5 - 0.2) + 0.2) * 100) / 100).toString()
   }
 }
 
@@ -257,6 +257,7 @@ router.get('/', function (req, res, next) {
   let _competition = []
   let competitionCount = req.query.compet || 1
   let marketlineCount = req.query.marketline || 1
+  golbalTeamNameTimes = 0
 
   res.json(_getCompetition(competitionCount, marketlineCount))
 })
